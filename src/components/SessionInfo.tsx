@@ -7,7 +7,9 @@ interface SessionInfoProps {
 }
 
 function SessionInfo({ completedSessions }: SessionInfoProps) {
-  const dots = Array.from({ length: 4 }, (_, i) => i < (completedSessions % 4))
+  const currentCycle = completedSessions % 4
+  const fullCycles = Math.floor(completedSessions / 4)
+  const dots = Array.from({ length: 4 }, (_, i) => i < currentCycle)
 
   return (
     <div className="session-info">
@@ -20,7 +22,10 @@ function SessionInfo({ completedSessions }: SessionInfoProps) {
         ))}
       </div>
       <span className="session-info__count">
-        {completedSessions} セッション完了
+        {completedSessions > 0
+          ? `${completedSessions} セッション${fullCycles > 0 ? ` (${fullCycles} サイクル)` : ''}`
+          : 'さあ、始めましょう'
+        }
       </span>
     </div>
   )

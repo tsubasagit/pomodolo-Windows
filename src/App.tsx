@@ -41,19 +41,23 @@ function App() {
   const [timeLeft, setTimeLeft] = useState(DURATIONS.work)
   const [isRunning, setIsRunning] = useState(false)
   const [completedSessions, setCompletedSessions] = useState(0)
+  const [peekOpen, setPeekOpen] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const totalTime = DURATIONS[mode]
   const progress = (totalTime - timeLeft) / totalTime
+  const isGhost = isRunning && !peekOpen
 
   const switchMode = useCallback((newMode: TimerMode) => {
     setMode(newMode)
     setTimeLeft(DURATIONS[newMode])
     setIsRunning(false)
+    setPeekOpen(false)
   }, [])
 
   const handleTimerComplete = useCallback(() => {
     setIsRunning(false)
+    setPeekOpen(false)
     playNotificationSound()
 
     const modeLabel = MODE_LABELS[mode]
@@ -105,16 +109,44 @@ function App() {
     }
   }, [timeLeft, isRunning, handleTimerComplete])
 
-  const handleStart = () => setIsRunning(true)
-  const handlePause = () => setIsRunning(false)
+  const handleStart = () => {
+    setIsRunning(true)
+    setPeekOpen(false)
+  }
+  const handlePause = () => {
+    setIsRunning(false)
+    setPeekOpen(false)
+  }
   const handleReset = () => {
     setIsRunning(false)
     setTimeLeft(DURATIONS[mode])
+    setPeekOpen(false)
   }
   const handleSkip = () => handleTimerComplete()
 
+  const handleTimerClick = () => {
+    if (!isRunning) return
+    setPeekOpen(prev => !prev)
+  }
+
+  // Space key: start / pause
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        e.preventDefault()
+        if (isRunning) {
+          handlePause()
+        } else {
+          handleStart()
+        }
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isRunning])
+
   return (
-    <div className={`app app--${mode}`}>
+    <div className={`app app--${mode} ${isGhost ? 'app--ghost' : 'app--full'}`}>
       <div className="titlebar">
         <span className="titlebar__label">{MODE_LABELS[mode]}</span>
         <button
@@ -128,24 +160,28 @@ function App() {
       </div>
 
       <main className="app__main">
-        <Timer
-          timeLeft={timeLeft}
-          progress={progress}
-          mode={mode}
-        />
-        <Controls
-          isRunning={isRunning}
-          onStart={handleStart}
-          onPause={handlePause}
-          onReset={handleReset}
-          onSkip={handleSkip}
-          mode={mode}
-        />
-        <SessionInfo
-          completedSessions={completedSessions}
-          mode={mode}
-          modeLabel={MODE_LABELS[mode]}
-        />
+        <div className="app__timer-area" onClick={handleTimerClick}>
+          <Timer
+            timeLeft={timeLeft}
+            progress={progress}
+            mode={mode}
+          />
+        </div>
+        <div className="app__controls">
+          <Controls
+            isRunning={isRunning}
+            onStart={handleStart}
+            onPause={handlePause}
+            onReset={handleReset}
+            onSkip={handleSkip}
+            mode={mode}
+          />
+          <SessionInfo
+            completedSessions={completedSessions}
+            mode={mode}
+            modeLabel={MODE_LABELS[mode]}
+          />
+        </div>
       </main>
     </div>
   )
