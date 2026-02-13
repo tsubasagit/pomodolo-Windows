@@ -1,0 +1,57 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --color-work: #ff6b6b;
+  --color-work-soft: rgba(255, 107, 107, 0.12);
+  --color-work-glow: rgba(255, 107, 107, 0.3);
+  --color-break: #51cf66;
+  --color-break-soft: rgba(81, 207, 102, 0.12);
+  --color-break-glow: rgba(81, 207, 102, 0.3);
+  --color-long-break: #845ef7;
+  --color-long-break-soft: rgba(132, 94, 247, 0.12);
+  --color-long-break-glow: rgba(132, 94, 247, 0.3);
+
+  --color-text: rgba(0, 0, 0, 0.85);
+  --color-text-secondary: rgba(0, 0, 0, 0.45);
+  --color-text-tertiary: rgba(0, 0, 0, 0.25);
+  --color-bg: rgba(246, 246, 246, 0.92);
+  --color-surface: rgba(255, 255, 255, 0.72);
+  --color-surface-hover: rgba(255, 255, 255, 0.9);
+  --color-border: rgba(0, 0, 0, 0.06);
+  --color-separator: rgba(0, 0, 0, 0.1);
+
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --transition: 200ms ease;
+  --transition-slow: 400ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Segoe UI", sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text);
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  min-height: 100vh;
+  overflow: hidden;
+  user-select: none;
+  background: transparent;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
